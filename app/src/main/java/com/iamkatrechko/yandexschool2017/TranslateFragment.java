@@ -92,22 +92,12 @@ public class TranslateFragment extends Fragment {
         mTextViewTranslateText = (TextView) v.findViewById(R.id.text_view_translate_text);
         mTextViewEnterText = (TextView) v.findViewById(R.id.text_view_enter_text);
 
-        mEditTextEnterText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+        mEditTextEnterText.addTextChangedListener(new SimpleTextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mTextViewEnterText.setText(String.valueOf(charSequence));
                 mTranslateService.translate(String.valueOf(charSequence)).enqueue(mTranslateResultCallback);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
             }
         });
         return v;
