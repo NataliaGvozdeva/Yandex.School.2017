@@ -3,4 +3,16 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="icons_tint">#858e98</color>
+    <color name="enter_text_area_corner">#cccccc</color>
+
+
+    <color name="text_color_translate_text">#000000</color>
+    <color name="text_color_enter_text">#333333</color>
+    <color name="text_color_part_of_speech">#a37d92</color>
+
+    <color name="text_color_list_item_translate">#4b7893</color>
+    <color name="text_color_list_item_description">#8d634d</color>
+
 </resources>

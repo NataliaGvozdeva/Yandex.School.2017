@@ -13,8 +13,11 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    /** Вью пейджер основных страниц-фрагментов */
     private ViewPager mViewPager;
+    /** Адаптер для основного вью пейджера */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    /** Шапка с вкладками для вью пейджера */
     private TabLayout mTabLayout;
 
     @Override
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return MainActivityFragment.newInstance(position);
+            return TranslateFragment.newInstance();
         }
 
         @Override
@@ -67,11 +71,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Перевод";
                 case 1:
-                    return "SECTION 2";
+                    return "История";
                 case 2:
-                    return "SECTION 3";
+                    return "Настройки";
             }
             return null;
         }
