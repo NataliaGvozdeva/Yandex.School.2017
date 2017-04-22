@@ -1,5 +1,6 @@
 package com.iamkatrechko.yandexschool2017;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 import com.iamkatrechko.yandexschool2017.adapter.HistoryCursorAdapter;
 import com.iamkatrechko.yandexschool2017.database.DatabaseDescription;
 import com.iamkatrechko.yandexschool2017.database.HistoryDatabaseHelper.HistoryRecordCursor;
+
+import static com.iamkatrechko.yandexschool2017.database.DatabaseDescription.*;
 
 /**
  * Фрагмент со списком истории переводов
@@ -51,6 +54,19 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         mRecyclerViewHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerViewHistory.setHasFixedSize(false);
         mRecyclerViewHistory.setAdapter(mHistoryCursorAdapter);
+        mHistoryCursorAdapter.setClickListener(new HistoryCursorAdapter.OnClickListener() {
+            @Override
+            public void onItemClickListener(long id) {
+
+            }
+
+            @Override
+            public void onBookmarkClickListener(long id, boolean isFavorite) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(Record.COLUMN_IS_FAVORITE, !isFavorite);
+                getActivity().getContentResolver().update(Record.buildClipUri(id), contentValues, null, null);
+            }
+        });
 
         getLoaderManager().restartLoader(HISTORY_LOADER, null, this);
         return v;
@@ -61,7 +77,7 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         switch (id) {
             case HISTORY_LOADER:
                 return new CursorLoader(getActivity(),
-                        DatabaseDescription.Record.CONTENT_URI, // Uri таблицы
+                        Record.CONTENT_URI, // Uri таблицы
                         null, // все столбцы
                         null, // все записи
                         null, // без аргументов

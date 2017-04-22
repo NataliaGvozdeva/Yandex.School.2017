@@ -25,6 +25,8 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
     private Context mContext;
     /** Список записей истории переводов */
     private HistoryRecordCursor mCursor;
+    /** Слушатель нажатий на элементы списка истории */
+    private OnClickListener mClickListener;
 
     /**
      * Конструктор
@@ -41,6 +43,14 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
     public void setDataCursor(HistoryRecordCursor cursor) {
         mCursor = cursor;
         notifyDataSetChanged();
+    }
+
+    /**
+     * Устанавливает слушатель нажатий на элементы списка
+     * @param listener слушатель нажатий на элементы списка
+     */
+    public void setClickListener(OnClickListener listener) {
+        mClickListener = listener;
     }
 
     @Override
@@ -95,6 +105,26 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
             mTextViewSourceText = (TextView) itemView.findViewById(R.id.text_view_source_text);
             mTextViewTranslateText = (TextView) itemView.findViewById(R.id.text_view_translate_text);
             mTextViewLanguages = (TextView) itemView.findViewById(R.id.text_view_from_to_lang);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mClickListener != null) {
+                        mCursor.moveToPosition(getAdapterPosition());
+                        mClickListener.onItemClickListener(mCursor.getID());
+                    }
+                }
+            });
+
+            mImageViewBookmark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mClickListener != null) {
+                        mCursor.moveToPosition(getAdapterPosition());
+                        mClickListener.onBookmarkClickListener(mCursor.getID(), mCursor.isFavorite());
+                    }
+                }
+            });
         }
 
         /**
@@ -108,5 +138,22 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
             mTextViewTranslateText.setText(cursor.getTranslate());
             mTextViewLanguages.setText(mContext.getString(R.string.languages, cursor.getFromLanguage(), cursor.getToLanguage()));
         }
+    }
+
+    /** Слушатель нажатий на элементы списка истории */
+    public interface OnClickListener {
+
+        /**
+         * Нажатие на элемент списка истории
+         * @param id идентификатор нажатого элемента
+         */
+        void onItemClickListener(long id);
+
+        /**
+         * Нажатие на иконку закладки элемента списка
+         * @param id         идентификатор элемента
+         * @param isFavorite текущее состояние избранности
+         */
+        void onBookmarkClickListener(long id, boolean isFavorite);
     }
 }
