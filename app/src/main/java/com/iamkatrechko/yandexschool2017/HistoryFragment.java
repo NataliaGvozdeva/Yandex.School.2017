@@ -7,15 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.iamkatrechko.yandexschool2017.adapter.HistoryCursorAdapter;
-import com.iamkatrechko.yandexschool2017.database.DatabaseDescription;
 import com.iamkatrechko.yandexschool2017.database.HistoryDatabaseHelper.HistoryRecordCursor;
 
 import static com.iamkatrechko.yandexschool2017.database.DatabaseDescription.*;
@@ -35,6 +35,9 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
     /** Адаптер виджета списка истории */
     private HistoryCursorAdapter mHistoryCursorAdapter;
 
+    private LinearLayout mLayoutInfo;
+    private TextView mTextViewInfo;
+
     /**
      * Возвращает новый экземпляр фрагмента
      * @return новый экземпляр фрагмента
@@ -49,6 +52,8 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         View v = inflater.inflate(R.layout.fragment_history, container, false);
 
         mRecyclerViewHistory = (RecyclerView) v.findViewById(R.id.recycler_view_history);
+        mLayoutInfo = (LinearLayout) v.findViewById(R.id.layout_info);
+        mTextViewInfo = (TextView) v.findViewById(R.id.text_view_info);
 
         mHistoryCursorAdapter = new HistoryCursorAdapter(getActivity());
         mRecyclerViewHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -90,10 +95,19 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mHistoryCursorAdapter.setDataCursor(new HistoryRecordCursor(data));
+        if (data.getCount() == 0) {
+            showInfoMessage(true, getString(R.string.history_empty));
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void showInfoMessage(boolean isShow, String textInfo) {
+        mRecyclerViewHistory.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mLayoutInfo.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mTextViewInfo.setText(textInfo);
     }
 }
