@@ -11,6 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Главная активность приложения
+ * @author iamkatrechko
+ *         Date: 22.04.2017
+ */
 public class MainActivity extends AppCompatActivity {
 
     /** Вью пейджер основных страниц-фрагментов */
@@ -34,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        //mTabLayout.getTabAt(i).setIcon(R.drawable.your_icon);
+        mTabLayout.getTabAt(SectionsPagerAdapter.pages.TRANSLATE.ordinal()).setIcon(R.drawable.drawable_translate);
+        mTabLayout.getTabAt(SectionsPagerAdapter.pages.HISTORY.ordinal()).setIcon(R.drawable.drawable_history);
+        mTabLayout.getTabAt(SectionsPagerAdapter.pages.SETTINGS.ordinal()).setIcon(R.drawable.drawable_settings);
     }
 
     @Override
@@ -53,22 +60,35 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    /** Адаптер страниц главного экрана */
+    private static class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private static final int COUNT_FRAGMENTS = 3;
+        /** Возможные экраны адаптера */
+        enum pages {
+            /** Экран перевода текста */
+            TRANSLATE,
+            /** Экран со списком истории */
+            HISTORY,
+            /** Экран настроек */
+            SETTINGS
+        }
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        /**
+         * Конструктор
+         * @param fm менеджер фрагментов
+         */
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
+            switch (pages.values()[position]) {
+                case TRANSLATE:
                     return TranslateFragment.newInstance();
-                case 1:
+                case HISTORY:
                     return HistoryFragment.newInstance();
-                case 2:
+                case SETTINGS:
                     return SettingsFragment.newInstance();
                 default:
                     return TranslateFragment.newInstance();
@@ -77,20 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return COUNT_FRAGMENTS;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Перевод";
-                case 1:
-                    return "История";
-                case 2:
-                    return "Настройки";
-            }
-            return null;
+            return pages.values().length;
         }
     }
 }

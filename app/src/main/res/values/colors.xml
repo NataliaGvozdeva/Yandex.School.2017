@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#ffcc00</color>
+    <color name="colorPrimaryDark">#dfb300</color>
+    <color name="colorAccent">#ffcc00</color>
 
     <color name="icons_tint">#858e98</color>
     <color name="enter_text_area_corner">#cccccc</color>
