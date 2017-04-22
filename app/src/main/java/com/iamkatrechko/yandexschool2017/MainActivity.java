@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        //mTabLayout.getTabAt(i).setIcon(R.drawable.your_icon);
     }
 
     @Override
