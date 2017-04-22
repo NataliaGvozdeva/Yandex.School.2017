@@ -61,7 +61,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return TranslateFragment.newInstance();
+            switch (position) {
+                case 0:
+                    return TranslateFragment.newInstance();
+                case 1:
+                    return HistoryFragment.newInstance();
+                default:
+                    return TranslateFragment.newInstance();
+            }
         }
 
         @Override

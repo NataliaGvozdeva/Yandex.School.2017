@@ -15,4 +15,9 @@
     <color name="text_color_list_item_translate">#4b7893</color>
     <color name="text_color_list_item_description">#8d634d</color>
 
+    <color name="text_color_list_history_source">#222222</color>
+    <color name="text_color_list_history_translate">#7f7f7f</color>
+    <color name="text_color_list_history_lang">#999999</color>
+    <color name="text_color_list_history_bookmark_on">#ffcc00</color>
+    <color name="text_color_list_history_bookmark_off">#858e98</color>
 </resources>

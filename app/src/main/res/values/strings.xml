@@ -7,4 +7,8 @@
     <string name="invalid_update_uri">Invalid update Uri:</string>
     <string name="invalid_delete_uri">Invalid delete Uri:</string>
     <string name="insert_failed">Insert failed: s</string>
+
+
+    <string name="history_query">Найти в истории</string>
+    <string name="languages">%1$s - %2$s</string>
 </resources>

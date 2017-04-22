@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <EditText
+        android:id="@+id/edit_text_history_query"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#00000000"
+        android:drawableLeft="@drawable/ic_search_black"
+        android:drawablePadding="16dp"
+        android:hint="@string/history_query"
+        android:maxLines="1"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

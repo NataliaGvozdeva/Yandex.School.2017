@@ -54,12 +54,12 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
      * @param sqLiteDatabase таблца для генерации
      */
     private void generateTestData(SQLiteDatabase sqLiteDatabase) {
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < 20; i++) {
             String query = "INSERT INTO " + Record.TABLE_NAME + " (source, translate, from_lang, to_lang, is_favorite) values(" +
                     "'source " + i + "', " +
                     "'translate " + i + "', " +
-                    "'from_lang" + i + "', " +
-                    "'to_lang" + i + "', " +
+                    "'RU" + i + "', " +
+                    "'EN" + i + "', " +
                     "" + i % 2 + ")";
             sqLiteDatabase.execSQL(query);
         }

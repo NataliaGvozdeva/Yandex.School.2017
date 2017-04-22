@@ -37,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author iamkatrechko
  *         Date: 22.04.2017
  */
-public class TranslateFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TranslateFragment extends Fragment {
 
     /** Retrofit-сервис для перевода слов */
     private YandexTranslateService mTranslateService;
@@ -48,8 +48,6 @@ public class TranslateFragment extends Fragment implements LoaderManager.LoaderC
     private TextView mTextViewTranslateText;
     /** Текстовое поле с исходным текстом для перевода */
     private TextView mTextViewEnterText;
-
-    private static final int HISTORY_LOADER = 0;
 
     private Callback<TranslateResult> mTranslateResultCallback = new Callback<TranslateResult>() {
         @Override
@@ -94,12 +92,6 @@ public class TranslateFragment extends Fragment implements LoaderManager.LoaderC
         mTextViewTranslateText = (TextView) v.findViewById(R.id.text_view_translate_text);
         mTextViewEnterText = (TextView) v.findViewById(R.id.text_view_enter_text);
 
-        mTextViewEnterText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getLoaderManager().restartLoader(HISTORY_LOADER, null, TranslateFragment.this);
-            }
-        });
         mEditTextEnterText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -119,30 +111,5 @@ public class TranslateFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
         return v;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case HISTORY_LOADER:
-                return new CursorLoader(getActivity(),
-                        DatabaseDescription.Record.CONTENT_URI, // Uri таблицы
-                        null, // все столбцы
-                        null, // все записи
-                        null, // без аргументов
-                        null); // сортировка
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("asf", "Загрузка успешна");
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }
