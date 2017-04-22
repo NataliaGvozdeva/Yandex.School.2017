@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private static final int COUNT_FRAGMENTS = 3;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
                     return TranslateFragment.newInstance();
                 case 1:
                     return HistoryFragment.newInstance();
+                case 2:
+                    return SettingsFragment.newInstance();
                 default:
                     return TranslateFragment.newInstance();
             }
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return COUNT_FRAGMENTS;
         }
 
         @Override

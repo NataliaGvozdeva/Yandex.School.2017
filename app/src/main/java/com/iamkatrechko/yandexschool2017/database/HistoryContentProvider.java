@@ -122,6 +122,9 @@ public class HistoryContentProvider extends ContentProvider {
                 numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
                         Record.TABLE_NAME, Record._ID + "=" + id, selectionArgs);
                 break;
+            case RECORDS:
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(Record.TABLE_NAME, s, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException(
                         getContext().getString(R.string.invalid_delete_uri) + uri);
