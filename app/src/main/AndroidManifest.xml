@@ -21,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <provider
+            android:name=".database.HistoryContentProvider"
+            android:authorities="com.iamkatrechko.yandexschool2017.database"/>
     </application>
 
 </manifest>

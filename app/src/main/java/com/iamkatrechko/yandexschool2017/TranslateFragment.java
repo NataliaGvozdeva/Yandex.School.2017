@@ -1,10 +1,15 @@
 package com.iamkatrechko.yandexschool2017;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +17,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.iamkatrechko.yandexschool2017.database.DatabaseDescription;
 import com.iamkatrechko.yandexschool2017.entity.TranslateResult;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,20 +37,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author iamkatrechko
  *         Date: 22.04.2017
  */
-public class TranslateFragment extends Fragment {
+public class TranslateFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /** Retrofit-сервис для перевода слов */
     private YandexTranslateService mTranslateService;
 
     /** Поле ввода текста для перевода */
     private EditText mEditTextEnterText;
+    /** Текстовое поле с результатом перевода */
     private TextView mTextViewTranslateText;
+    /** Текстовое поле с исходным текстом для перевода */
     private TextView mTextViewEnterText;
+
+    private static final int HISTORY_LOADER = 0;
 
     private Callback<TranslateResult> mTranslateResultCallback = new Callback<TranslateResult>() {
         @Override
         public void onResponse(Call<TranslateResult> call, Response<TranslateResult> response) {
-            mTextViewTranslateText.setText(response.body().getText().get(0));
+            if (response.body() != null) {
+                mTextViewTranslateText.setText(response.body().getText().get(0));
+            } else {
+                Toast.makeText(getActivity(), String.valueOf("Ошибка"), Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
@@ -74,6 +94,12 @@ public class TranslateFragment extends Fragment {
         mTextViewTranslateText = (TextView) v.findViewById(R.id.text_view_translate_text);
         mTextViewEnterText = (TextView) v.findViewById(R.id.text_view_enter_text);
 
+        mTextViewEnterText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLoaderManager().restartLoader(HISTORY_LOADER, null, TranslateFragment.this);
+            }
+        });
         mEditTextEnterText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -83,6 +109,7 @@ public class TranslateFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mTextViewEnterText.setText(String.valueOf(charSequence));
                 mTranslateService.translate(String.valueOf(charSequence)).enqueue(mTranslateResultCallback);
             }
 
@@ -92,5 +119,30 @@ public class TranslateFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case HISTORY_LOADER:
+                return new CursorLoader(getActivity(),
+                        DatabaseDescription.Record.CONTENT_URI, // Uri таблицы
+                        null, // все столбцы
+                        null, // все записи
+                        null, // без аргументов
+                        null); // сортировка
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d("asf", "Загрузка успешна");
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
