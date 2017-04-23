@@ -28,16 +28,13 @@ public class TranslateProvider {
     /** Базовый адрес сервера */
     private static final String BASE_URL = "https://translate.yandex.net/api/v1.5/tr.json/";
 
+    /** Конструктор */
     public TranslateProvider() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mTranslateService = retrofit.create(YandexTranslateService.class);
-    }
-
-    public void getLanguages() {
-
     }
 
     public void translate(String textToTranslate, @NonNull final Callback<TranslateResponse> callback) {

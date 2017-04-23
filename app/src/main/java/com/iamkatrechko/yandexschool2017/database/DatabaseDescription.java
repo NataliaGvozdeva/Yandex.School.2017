@@ -51,5 +51,23 @@ public class DatabaseDescription {
             contentValues.put(COLUMN_IS_FAVORITE, "0");
             return contentValues;
         }
+
+        /**
+         * Возвращает одну запись в виде пар ключ-значение
+         * @param source     исходный текст перевода
+         * @param translate  конечный текст перевода
+         * @param langFrom   исходный язык перевода
+         * @param langTo     конечный язык перевода
+         * @param isFavorite принадлежность записи к избранным
+         */
+        public static ContentValues getContentValues(String source, String translate, String langFrom, String langTo, boolean isFavorite) {
+            ContentValues contentValues = getDefaultContentValues();
+            contentValues.put(COLUMN_SOURCE, source);
+            contentValues.put(COLUMN_TRANSLATE, translate);
+            contentValues.put(COLUMN_FROM_LANG, langFrom);
+            contentValues.put(COLUMN_TO_LANG, langTo);
+            contentValues.put(COLUMN_IS_FAVORITE, isFavorite ? "1" : "0");
+            return contentValues;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.iamkatrechko.yandexschool2017;
 
+import android.content.ContentValues;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iamkatrechko.yandexschool2017.entity.TranslateResponse;
+import com.iamkatrechko.yandexschool2017.util.HistoryUtils;
 
 /**
  * Фрагмент экрана перевода
@@ -37,7 +39,8 @@ public class TranslateFragment extends Fragment {
 
         @Override
         public void onError(Throwable t) {
-            Toast.makeText(getActivity(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            mTextViewTranslateText.setText("");
+            Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -77,7 +80,22 @@ public class TranslateFragment extends Fragment {
                 mTranslateProvider.translate(String.valueOf(charSequence), mTranslateResultCallback);
             }
         });
+
         return v;
+    }
+
+    /** Добавляет текущую запись в историю */
+    private void addToHistory() {
+        String source = mTextViewEnterText.getText().toString();
+        String translate = mTextViewTranslateText.getText().toString();
+        String fromLang = "ru";
+        String toLang = "en";
+        HistoryUtils.addRecord(getActivity(),
+                source,
+                translate,
+                fromLang,
+                toLang,
+                false);
     }
 
     /** Очищает все поля, связанные с переводом текста */
