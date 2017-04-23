@@ -44,22 +44,6 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.getTabAt(SectionsPagerAdapter.pages.SETTINGS.ordinal()).setIcon(R.drawable.drawable_settings);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     /** Адаптер страниц главного экрана */
     private static class SectionsPagerAdapter extends FragmentPagerAdapter {
 

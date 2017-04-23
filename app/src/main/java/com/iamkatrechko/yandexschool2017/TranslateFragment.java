@@ -27,7 +27,6 @@ public class TranslateFragment extends Fragment {
     private TextView mTextViewTranslateText;
     /** Текстовое поле с исходным текстом для перевода */
     private TextView mTextViewEnterText;
-
     /** Коллбэк на получение результата перевода */
     private Callback<TranslateResponse> mTranslateResultCallback = new Callback<TranslateResponse>() {
 
@@ -38,7 +37,6 @@ public class TranslateFragment extends Fragment {
 
         @Override
         public void onError(Throwable t) {
-            Toast.makeText(getActivity(), String.valueOf("Ошибка"), Toast.LENGTH_SHORT).show();
             Toast.makeText(getActivity(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
     };
@@ -71,7 +69,8 @@ public class TranslateFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() == 0) {
-                    clearAll();
+                    mTextViewEnterText.setText("");
+                    mTextViewTranslateText.setText("");
                     return;
                 }
                 mTextViewEnterText.setText(String.valueOf(charSequence));
