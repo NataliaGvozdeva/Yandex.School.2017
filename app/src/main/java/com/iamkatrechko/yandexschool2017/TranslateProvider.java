@@ -42,12 +42,12 @@ public class TranslateProvider {
 
     public void translate(String textToTranslate, @NonNull final Callback<TranslateResponse> callback) {
 
-        mTranslateService.translate(textToTranslate).enqueue(new retrofit2.Callback<ResponseBody>() {
+        mTranslateService.translate(textToTranslate, "ru-en").enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     TranslateResponse translateResponse = TranslateResponse.from(new JSONObject(response.body().string()));
-                    if (translateResponse.getCode() == 200) {
+                    if (translateResponse.isSuccess()) {
                         callback.onSuccess(translateResponse);
                     } else {
                         callback.onError(new Throwable("Ошибка перевода"));

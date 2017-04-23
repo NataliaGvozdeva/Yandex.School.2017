@@ -8,9 +8,13 @@ import org.json.JSONObject;
  */
 public class TranslateResponse {
 
+    /** Код ответа */
     private final int mCode;
+    /** Сообщение */
     private String mMessage;
+    /** Переведенный текст */
     private String mTranslateText;
+    /** Языки перевода */
     private String mLanguage;
 
     public TranslateResponse(int code) {
@@ -39,5 +43,9 @@ public class TranslateResponse {
 
     public String getLanguage() {
         return mLanguage;
+    }
+
+    public boolean isSuccess() {
+        return getCode() == 200;
     }
 }

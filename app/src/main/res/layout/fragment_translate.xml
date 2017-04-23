@@ -29,6 +29,7 @@
                 android:layout_weight="1"
                 android:background="#00000000"
                 android:gravity="top"
+                android:hint="@string/enter_text"
                 android:padding="8dp"
                 tools:text="Переводимый текст"
                 />
@@ -97,7 +98,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/text_color_translate_text"
-                android:textSize="17sp"
+                android:textSize="19sp"
                 tools:text="Переведенный текст"
                 />
 
@@ -112,7 +113,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/text_color_enter_text"
-                android:textSize="17sp"
+                android:textSize="19sp"
                 tools:text="Исходный текст"
                 />
 

@@ -8,6 +8,8 @@
     <string name="invalid_delete_uri">Invalid delete Uri:</string>
     <string name="insert_failed">Insert failed: s</string>
 
+    <string name="enter_text">Введите текст для перевода</string>
+
     <string name="clear_history">Очистить историю</string>
     <string name="cleared_history">История очищена</string>
     <string name="history_empty">История пуста</string>
