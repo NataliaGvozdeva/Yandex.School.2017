@@ -1,15 +1,8 @@
 package com.iamkatrechko.yandexschool2017;
 
-import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.iamkatrechko.yandexschool2017.database.DatabaseDescription;
-import com.iamkatrechko.yandexschool2017.entity.TranslateResult;
-
-import java.io.IOException;
-
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.iamkatrechko.yandexschool2017.entity.TranslateResponse;
 
 /**
  * Фрагмент экрана перевода
@@ -39,9 +19,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class TranslateFragment extends Fragment {
 
-    /** Retrofit-сервис для перевода слов */
-    private YandexTranslateService mTranslateService;
-
+    /** Провайдер для перевода текстов и получения доступных языков */
+    private TranslateProvider mTranslateProvider;
     /** Поле ввода текста для перевода */
     private EditText mEditTextEnterText;
     /** Текстовое поле с результатом перевода */
@@ -49,18 +28,17 @@ public class TranslateFragment extends Fragment {
     /** Текстовое поле с исходным текстом для перевода */
     private TextView mTextViewEnterText;
 
-    private Callback<TranslateResult> mTranslateResultCallback = new Callback<TranslateResult>() {
+    /** Коллбэк на получение результата перевода */
+    private Callback<TranslateResponse> mTranslateResultCallback = new Callback<TranslateResponse>() {
+
         @Override
-        public void onResponse(Call<TranslateResult> call, Response<TranslateResult> response) {
-            if (response.body() != null) {
-                mTextViewTranslateText.setText(response.body().getText().get(0));
-            } else {
-                Toast.makeText(getActivity(), String.valueOf("Ошибка"), Toast.LENGTH_SHORT).show();
-            }
+        public void onSuccess(TranslateResponse result) {
+            mTextViewTranslateText.setText(result.getTranslateText());
         }
 
         @Override
-        public void onFailure(Call<TranslateResult> call, Throwable t) {
+        public void onError(Throwable t) {
+            Toast.makeText(getActivity(), String.valueOf("Ошибка"), Toast.LENGTH_SHORT).show();
             Toast.makeText(getActivity(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
     };
@@ -76,11 +54,7 @@ public class TranslateFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://translate.yandex.net/api/v1.5/tr.json/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        mTranslateService = retrofit.create(YandexTranslateService.class);
+        mTranslateProvider = new TranslateProvider();
     }
 
     @Override
@@ -96,10 +70,21 @@ public class TranslateFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 0) {
+                    clearAll();
+                    return;
+                }
                 mTextViewEnterText.setText(String.valueOf(charSequence));
-                mTranslateService.translate(String.valueOf(charSequence)).enqueue(mTranslateResultCallback);
+                mTranslateProvider.translate(String.valueOf(charSequence), mTranslateResultCallback);
             }
         });
         return v;
+    }
+
+    /** Очищает все поля, связанные с переводом текста */
+    private void clearAll() {
+        mEditTextEnterText.setText("");
+        mTextViewEnterText.setText("");
+        mTextViewTranslateText.setText("");
     }
 }
