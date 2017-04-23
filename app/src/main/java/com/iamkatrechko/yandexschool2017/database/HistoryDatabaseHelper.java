@@ -54,14 +54,14 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
      * @param db база данных для генерации
      */
     private void generateTestData(SQLiteDatabase db) {
-        insertRecord(db, "streamline", "оптимизация", "EN", "RU", true);
-        insertRecord(db, "enigma", "Энигма", "EN", "RU", true);
-        insertRecord(db, "streamlined", "обтекаемый", "EN", "RU", false);
-        insertRecord(db, "Привет", "Hi", "RU", "EN", false);
-        insertRecord(db, "распространитель", "distributor", "RU", "EN", false);
-        insertRecord(db, "purveyor", "поставщик", "EN", "RU", false);
-        insertRecord(db, "purveyors", "заготовителей", "EN", "RU", false);
-        insertRecord(db, "acquaintance", "знакомство", "EN", "RU", true);
+        insertRecord(db, "streamline", "оптимизация", "en", "ru", true);
+        insertRecord(db, "enigma", "Энигма", "en", "ru", true);
+        insertRecord(db, "streamlined", "обтекаемый", "en", "ru", false);
+        insertRecord(db, "Привет", "Hi", "ru", "en", false);
+        insertRecord(db, "распространитель", "distributor", "ru", "en", false);
+        insertRecord(db, "purveyor", "поставщик", "en", "ru", false);
+        insertRecord(db, "purveyors", "заготовителей", "en", "ru", false);
+        insertRecord(db, "acquaintance", "знакомство", "en", "ru", true);
     }
 
     /**

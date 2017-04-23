@@ -26,6 +26,30 @@ public class TranslateRequest {
         this.langTo = langTo;
     }
 
+    /**
+     * Возвращает текст для перевода
+     * @return текст для перевода
+     */
+    public String getSourceText() {
+        return sourceText;
+    }
+
+    /**
+     * Возвращает исходный язык перевода
+     * @return исходный язык перевода
+     */
+    public String getLangFrom() {
+        return langFrom;
+    }
+
+    /**
+     * Возвращает конечный язык перевода
+     * @return конечный язык перевода
+     */
+    public String getLangTo() {
+        return langTo;
+    }
+
     @Override
     public int hashCode() {
         return sourceText.hashCode() + langFrom.hashCode() + langTo.hashCode();

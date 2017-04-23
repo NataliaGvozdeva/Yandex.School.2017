@@ -70,7 +70,7 @@ public class TranslateProvider {
                           @NonNull final Callback<String> callback) {
         final TranslateRequest request = new TranslateRequest(textToTranslate, mLanguageFrom.getLangCode(), mLanguageTo.getLangCode());
         if (historyCache.containsKey(request)) {
-            callback.onSuccess(historyCache.get(request));
+            callback.onSuccess(request, historyCache.get(request));
             return;
         }
 
@@ -82,7 +82,7 @@ public class TranslateProvider {
                     TranslateResponse translateResponse = TranslateResponse.from(new JSONObject(response.body().string()));
                     if (translateResponse.isSuccess()) {
                         historyCache.put(request, translateResponse.getTranslateText());
-                        callback.onSuccess(translateResponse.getTranslateText());
+                        callback.onSuccess(request, translateResponse.getTranslateText());
                     } else {
                         String errorText;
                         switch (translateResponse.getCode()) {
