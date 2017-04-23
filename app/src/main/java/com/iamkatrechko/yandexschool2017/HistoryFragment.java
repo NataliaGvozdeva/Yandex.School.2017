@@ -10,6 +10,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import com.iamkatrechko.yandexschool2017.adapter.HistoryCursorAdapter;
 import com.iamkatrechko.yandexschool2017.database.HistoryDatabaseHelper.HistoryRecordCursor;
+import com.iamkatrechko.yandexschool2017.util.UtilPreferences;
 
 import static com.iamkatrechko.yandexschool2017.database.DatabaseDescription.*;
 
@@ -29,9 +33,11 @@ import static com.iamkatrechko.yandexschool2017.database.DatabaseDescription.*;
 public class HistoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /** Константа для загрузки списка истории переводов */
-    private static final int HISTORY_LOADER = 0;
+    private static final int HISTORY_LOADER_ALL = 0;
     /** Константа для загрузки отфильтрованного списка истории переводов */
-    private static final int HISTORY_SEARCH = 1;
+    private static final int HISTORY_LOADER_SEARCH = 1;
+    /** Константа для загрузки избранного списка истории переводов */
+    private static final int HISTORY_LOADER_FAVORITE = 2;
     /** Ключ аргумента для передачи текста запроса */
     private static final String ARGUMENT_QUERY = "query";
 
@@ -57,6 +63,7 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_history, container, false);
 
         mRecyclerViewHistory = (RecyclerView) v.findViewById(R.id.recycler_view_history);
@@ -88,33 +95,44 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 super.onTextChanged(charSequence, i, i1, i2);
                 if (charSequence.length() == 0) {
+                    getLoaderManager().restartLoader(HISTORY_LOADER_ALL, null, HistoryFragment.this);
                     return;
                 }
                 Bundle bundle = new Bundle();
                 bundle.putString(ARGUMENT_QUERY, String.valueOf(charSequence));
-                getLoaderManager().restartLoader(HISTORY_SEARCH, bundle, HistoryFragment.this);
+                getLoaderManager().restartLoader(HISTORY_LOADER_SEARCH, bundle, HistoryFragment.this);
             }
         });
 
-        getLoaderManager().restartLoader(HISTORY_LOADER, null, this);
+        getLoaderManager().restartLoader(HISTORY_LOADER_ALL, null, this);
         return v;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case HISTORY_LOADER:
+            case HISTORY_LOADER_ALL:
                 return new CursorLoader(getActivity(),
                         Record.CONTENT_URI,
                         null, null, null, null);
-            case HISTORY_SEARCH:
+            case HISTORY_LOADER_SEARCH:
                 String queryText = args.getString(ARGUMENT_QUERY);
                 return new CursorLoader(getActivity(),
                         Record.CONTENT_URI,
                         null,
                         Record.COLUMN_SOURCE + " LIKE '%" + queryText + "%' OR " +
                                 Record.COLUMN_TRANSLATE + " LIKE '%" + queryText + "%'",
-                        null, null);
+                        null,
+                        null);
+            case HISTORY_LOADER_FAVORITE:
+                boolean isOnlyFavorite = UtilPreferences.isShowOnlyFavorite(getActivity());
+                String onlyFavoriteQuery = isOnlyFavorite ? Record.COLUMN_IS_FAVORITE + " = 1" : "";
+                return new CursorLoader(getActivity(),
+                        Record.CONTENT_URI,
+                        null,
+                        onlyFavoriteQuery,
+                        null,
+                        null);
             default:
                 return null;
         }
@@ -124,11 +142,12 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         String infoMessage;
         switch (loader.getId()) {
-            case HISTORY_LOADER:
+            case HISTORY_LOADER_ALL:
+            case HISTORY_LOADER_FAVORITE:
                 infoMessage = getString(R.string.history_empty);
                 break;
-            case HISTORY_SEARCH:
-                infoMessage = getString(R.string.history_empty);
+            case HISTORY_LOADER_SEARCH:
+                infoMessage = getString(R.string.history_not_found);
                 break;
             default:
                 return;
@@ -139,6 +158,45 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_history, menu);
+
+        boolean showOnlyFavorite = UtilPreferences.isShowOnlyFavorite(getActivity());
+        MenuItem itemStar = menu.findItem(R.id.action_show_favorites);
+        changeToolbarItemIcon(itemStar, showOnlyFavorite);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Отображать только избранные записи
+            case R.id.action_show_favorites:
+                boolean isOnly = UtilPreferences.isShowOnlyFavorite(getActivity());
+                changeToolbarItemIcon(item, !isOnly);
+                UtilPreferences.setShowOnlyFavorite(getActivity(), !isOnly);
+                getLoaderManager().restartLoader(HISTORY_LOADER_FAVORITE, null, HistoryFragment.this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Меняет значок ToolBar"а (звездочку) в зависимости от того,
+     * отображаются ли только избранные записи, или нет
+     * @param itemStar           элемент ToolBar'а
+     * @param isOnlyFavoriteShow отображаются только избранные записи
+     */
+    private void changeToolbarItemIcon(MenuItem itemStar, boolean isOnlyFavoriteShow) {
+        if (isOnlyFavoriteShow) {
+            itemStar.setIcon(R.drawable.ic_star_white);
+        } else {
+            itemStar.setIcon(R.drawable.ic_star_border_white);
+        }
     }
 
     /**

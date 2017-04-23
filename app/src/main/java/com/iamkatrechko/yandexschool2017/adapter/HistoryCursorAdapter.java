@@ -134,6 +134,7 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
         public void bindView(HistoryRecordCursor cursor) {
             mImageViewBookmark.setColorFilter(ContextCompat.getColor(mContext,
                     cursor.isFavorite() ? R.color.text_color_list_history_bookmark_on : R.color.text_color_list_history_bookmark_off));
+            mImageViewBookmark.setImageResource(cursor.isFavorite()? R.drawable.ic_star_white : R.drawable.ic_star_border_white);
             mTextViewSourceText.setText(cursor.getSource());
             mTextViewTranslateText.setText(cursor.getTranslate());
             mTextViewLanguages.setText(mContext.getString(R.string.languages, cursor.getFromLanguage(), cursor.getToLanguage()));

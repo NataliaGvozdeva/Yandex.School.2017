@@ -11,6 +11,7 @@
     <string name="clear_history">Очистить историю</string>
     <string name="cleared_history">История очищена</string>
     <string name="history_empty">История пуста</string>
+    <string name="history_not_found">Записи не найдены</string>
     <string name="history_query">Найти в истории</string>
     <string name="languages">%1$s - %2$s</string>
 </resources>

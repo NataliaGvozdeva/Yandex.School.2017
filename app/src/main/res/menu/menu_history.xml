@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.iamkatrechko.clipboardmanager.MainActivity">
+
+    <item
+        android:id="@+id/action_show_favorites"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/ic_star_border_white"
+        android:title="Только избранные"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>
