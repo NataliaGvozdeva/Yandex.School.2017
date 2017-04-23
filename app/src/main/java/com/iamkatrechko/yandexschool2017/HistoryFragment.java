@@ -8,6 +8,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.iamkatrechko.yandexschool2017.adapter.HistoryCursorAdapter;
 import com.iamkatrechko.yandexschool2017.database.HistoryDatabaseHelper.HistoryRecordCursor;
+import com.iamkatrechko.yandexschool2017.util.HistoryUtils;
 import com.iamkatrechko.yandexschool2017.util.UtilPreferences;
 
 import static com.iamkatrechko.yandexschool2017.database.DatabaseDescription.*;
@@ -79,6 +81,11 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onItemClickListener(long id) {
 
+            }
+
+            @Override
+            public void onItemLongClickListener(View v, long id) {
+                showPopupMenuDelete(v, id);
             }
 
             @Override
@@ -206,5 +213,29 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         mRecyclerViewHistory.setVisibility(isShow ? View.GONE : View.VISIBLE);
         mLayoutInfo.setVisibility(isShow ? View.VISIBLE : View.GONE);
         mTextViewInfo.setText(textInfo);
+    }
+
+    /**
+     * Отображает контекстное меню удаление записи из истории
+     * @param v  виджет элемента списка истории
+     * @param id идентификатор элемента истории
+     */
+    private void showPopupMenuDelete(View v, final long id) {
+        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+        popupMenu.inflate(R.menu.popup_menu_item_long_click);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        HistoryUtils.deleteRecord(getActivity(), id);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.show();
     }
 }

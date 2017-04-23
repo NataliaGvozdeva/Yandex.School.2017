@@ -32,4 +32,13 @@ public class HistoryUtils {
             context.getContentResolver().insert(Record.CONTENT_URI, values);
         }
     }
+
+    /**
+     * Удаляет запись из истории переводов
+     * @param context контекст
+     * @param id      идентификатор удаляемой записи
+     */
+    public static void deleteRecord(Context context, long id) {
+        context.getContentResolver().delete(Record.buildClipUri(id), null, null);
+    }
 }

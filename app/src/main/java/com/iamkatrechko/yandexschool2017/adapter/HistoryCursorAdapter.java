@@ -116,6 +116,17 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
                 }
             });
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (mClickListener != null) {
+                        mCursor.moveToPosition(getAdapterPosition());
+                        mClickListener.onItemLongClickListener(view, mCursor.getID());
+                    }
+                    return true;
+                }
+            });
+
             mImageViewBookmark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -134,7 +145,7 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
         public void bindView(HistoryRecordCursor cursor) {
             mImageViewBookmark.setColorFilter(ContextCompat.getColor(mContext,
                     cursor.isFavorite() ? R.color.text_color_list_history_bookmark_on : R.color.text_color_list_history_bookmark_off));
-            mImageViewBookmark.setImageResource(cursor.isFavorite()? R.drawable.ic_star_white : R.drawable.ic_star_border_white);
+            mImageViewBookmark.setImageResource(cursor.isFavorite() ? R.drawable.ic_star_white : R.drawable.ic_star_border_white);
             mTextViewSourceText.setText(cursor.getSource());
             mTextViewTranslateText.setText(cursor.getTranslate());
             mTextViewLanguages.setText(mContext.getString(R.string.languages, cursor.getFromLanguage(), cursor.getToLanguage()));
@@ -149,6 +160,13 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
          * @param id идентификатор нажатого элемента
          */
         void onItemClickListener(long id);
+
+        /**
+         * Долгое нажатие на элемент списка истории
+         * @param v  виджет, на котором произошло действие
+         * @param id идентификатор нажатого элемента
+         */
+        void onItemLongClickListener(View v, long id);
 
         /**
          * Нажатие на иконку закладки элемента списка
