@@ -4,12 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.iamkatrechko.yandexschool2017.R;
+
 /**
  * Утилитный класс
  * @author iamkatrechko
  *         Date: 23.04.2017
  */
 public class Util {
+
+    /**
+     * Отправляет текст письмом
+     * @param shareText содержимое письма
+     */
+    public static void shareText(Context context, String shareText){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.putExtra(Intent.EXTRA_TEXT, shareText);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.select_app_to_share)));
+    }
 
     /**
      * Открывает страницу разработчика в Google Play

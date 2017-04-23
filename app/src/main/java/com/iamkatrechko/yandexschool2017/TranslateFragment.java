@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.iamkatrechko.yandexschool2017.dialog.DialogChoiceLanguage;
 import com.iamkatrechko.yandexschool2017.entity.Language;
 import com.iamkatrechko.yandexschool2017.util.HistoryUtils;
+import com.iamkatrechko.yandexschool2017.util.Util;
 
 /**
  * Фрагмент экрана перевода
@@ -43,6 +44,8 @@ public class TranslateFragment extends Fragment {
     private TextView mTextViewEnterText;
     /** Кнопка смены языков между собой */
     private ImageButton mImageButtonArrows;
+    /** Кнопка "поделиться переводом" */
+    private ImageButton mImageButtonShare;
     /** Кнопка выбора исходного языка */
     private Button mButtonLangFrom;
     /** Кнопка выбора конечного языка */
@@ -86,6 +89,7 @@ public class TranslateFragment extends Fragment {
         mTextViewTranslateText = (TextView) v.findViewById(R.id.text_view_translate_text);
         mTextViewEnterText = (TextView) v.findViewById(R.id.text_view_enter_text);
         mImageButtonArrows = (ImageButton) v.findViewById(R.id.image_button_arrows);
+        mImageButtonShare = (ImageButton) v.findViewById(R.id.image_button_share);
         mButtonLangFrom = (Button) v.findViewById(R.id.button_lang_from);
         mButtonLangTo = (Button) v.findViewById(R.id.button_lang_to);
 
@@ -112,6 +116,13 @@ public class TranslateFragment extends Fragment {
                 mTranslateProvider.setLanguageFrom(mTranslateProvider.getLanguageTo());
                 mTranslateProvider.setLanguageTo(langFrom);
                 updateButtonLanguages();
+            }
+        });
+
+        mImageButtonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Util.shareText(getActivity(), mTextViewTranslateText.getText().toString());
             }
         });
 
