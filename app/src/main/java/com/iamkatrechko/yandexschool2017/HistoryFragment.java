@@ -36,8 +36,7 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int HISTORY_LOADER_ALL = 0;
     /** Константа для загрузки отфильтрованного списка истории переводов */
     private static final int HISTORY_LOADER_SEARCH = 1;
-    /** Константа для загрузки избранного списка истории переводов */
-    private static final int HISTORY_LOADER_FAVORITE = 2;
+
     /** Ключ аргумента для передачи текста запроса */
     private static final String ARGUMENT_QUERY = "query";
 
@@ -104,33 +103,33 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
+        mEditTextSearch.setHint(UtilPreferences.isShowOnlyFavorite(getActivity()) ?
+                R.string.history_search_favorite : R.string.history_search);
         getLoaderManager().restartLoader(HISTORY_LOADER_ALL, null, this);
         return v;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        boolean isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(getActivity());
         switch (id) {
             case HISTORY_LOADER_ALL:
-                return new CursorLoader(getActivity(),
-                        Record.CONTENT_URI,
-                        null, null, null, null);
-            case HISTORY_LOADER_SEARCH:
-                String queryText = args.getString(ARGUMENT_QUERY);
+                String onlyFavorite = isOnlyFavoriteShow ? Record.COLUMN_IS_FAVORITE + " = 1" : "";
                 return new CursorLoader(getActivity(),
                         Record.CONTENT_URI,
                         null,
-                        Record.COLUMN_SOURCE + " LIKE '%" + queryText + "%' OR " +
-                                Record.COLUMN_TRANSLATE + " LIKE '%" + queryText + "%'",
+                        onlyFavorite,
                         null,
                         null);
-            case HISTORY_LOADER_FAVORITE:
-                boolean isOnlyFavorite = UtilPreferences.isShowOnlyFavorite(getActivity());
-                String onlyFavoriteQuery = isOnlyFavorite ? Record.COLUMN_IS_FAVORITE + " = 1" : "";
+            case HISTORY_LOADER_SEARCH:
+                String queryText = args.getString(ARGUMENT_QUERY);
+                String onlyFavoriteQuery = isOnlyFavoriteShow ? " and " + Record.COLUMN_IS_FAVORITE + " = 1" : "";
                 return new CursorLoader(getActivity(),
                         Record.CONTENT_URI,
                         null,
-                        onlyFavoriteQuery,
+                        "(" + Record.COLUMN_SOURCE + " LIKE '%" + queryText + "%' OR " +
+                                Record.COLUMN_TRANSLATE + " LIKE '%" + queryText + "%')" +
+                                onlyFavoriteQuery,
                         null,
                         null);
             default:
@@ -143,7 +142,6 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         String infoMessage;
         switch (loader.getId()) {
             case HISTORY_LOADER_ALL:
-            case HISTORY_LOADER_FAVORITE:
                 infoMessage = getString(R.string.history_empty);
                 break;
             case HISTORY_LOADER_SEARCH:
@@ -166,9 +164,7 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         menu.clear();
         inflater.inflate(R.menu.menu_history, menu);
 
-        boolean showOnlyFavorite = UtilPreferences.isShowOnlyFavorite(getActivity());
-        MenuItem itemStar = menu.findItem(R.id.action_show_favorites);
-        changeToolbarItemIcon(itemStar, showOnlyFavorite);
+        changeToolbarItemIcon(menu.findItem(R.id.action_show_favorites), UtilPreferences.isShowOnlyFavorite(getActivity()));
     }
 
     @Override
@@ -176,10 +172,12 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
         switch (item.getItemId()) {
             // Отображать только избранные записи
             case R.id.action_show_favorites:
+                mEditTextSearch.setText("");
                 boolean isOnly = UtilPreferences.isShowOnlyFavorite(getActivity());
+                mEditTextSearch.setHint(!isOnly ? R.string.history_search_favorite : R.string.history_search);
                 changeToolbarItemIcon(item, !isOnly);
                 UtilPreferences.setShowOnlyFavorite(getActivity(), !isOnly);
-                getLoaderManager().restartLoader(HISTORY_LOADER_FAVORITE, null, HistoryFragment.this);
+                getLoaderManager().restartLoader(HISTORY_LOADER_ALL, null, HistoryFragment.this);
                 break;
         }
         return super.onOptionsItemSelected(item);
