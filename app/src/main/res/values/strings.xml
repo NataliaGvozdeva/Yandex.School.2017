@@ -10,6 +10,8 @@
 
     <string name="enter_text">Введите текст для перевода</string>
 
+    <string name="error_no_internet">Отсутствует интернет подключение</string>
+    <string name="error">Ошибка перевода</string>
     <string name="clear_history">Очистить историю</string>
     <string name="cleared_history">История очищена</string>
     <string name="history_empty">История пуста</string>
