@@ -17,4 +17,11 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="MyImageButton" parent="AppTheme">
+        <item name="android:layout_width">@dimen/translate_icons_size</item>
+        <item name="android:layout_height">@dimen/translate_icons_size</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:tint">@color/icons_tint</item>
+    </style>
+
 </resources>
