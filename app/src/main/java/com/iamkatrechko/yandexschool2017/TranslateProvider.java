@@ -3,15 +3,19 @@ package com.iamkatrechko.yandexschool2017;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.iamkatrechko.yandexschool2017.entity.Language;
 import com.iamkatrechko.yandexschool2017.entity.TranslateRequest;
 import com.iamkatrechko.yandexschool2017.entity.TranslateResponse;
 import com.iamkatrechko.yandexschool2017.retrofit.YandexTranslateService;
+import com.iamkatrechko.yandexschool2017.util.UtilPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -31,27 +35,47 @@ public class TranslateProvider {
     private YandexTranslateService mTranslateService;
     /** Базовый адрес сервера */
     private static final String BASE_URL = "https://translate.yandex.net/api/v1.5/tr.json/";
-    /** Примитивный кэш переведенных текстов на время сессии в приложении */
+    /** Примитивный кэш переведенных текстов на время сессии приложения */
     private Map<TranslateRequest, String> historyCache = new HashMap<>();
+    /** Список доступных языков */
+    private List<Language> mLanguageList = new ArrayList<>();
+    /** Исходный язык перевода */
+    private static Language mLanguageFrom;
+    /** Конечный язык перевода */
+    private static Language mLanguageTo;
 
-    /** Конструктор */
-    public TranslateProvider() {
+    /**
+     * Конструктор
+     * @param context контекст
+     */
+    public TranslateProvider(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mTranslateService = retrofit.create(YandexTranslateService.class);
+
+        mLanguageFrom = getLastLanguageFrom(context);
+        mLanguageTo = getLastLanguageTo(context);
     }
 
-    public void translate(@NonNull final Context context, String textToTranslate, String langFrom, String langTo,
+    /**
+     * Переводит текст и выполняет интерфейс обратного вызова при завершении операции
+     * @param context         контекст
+     * @param textToTranslate текст для перевода
+     * @param callback        интерфейс обратного вызова
+     */
+    public void translate(@NonNull final Context context,
+                          String textToTranslate,
                           @NonNull final Callback<String> callback) {
-        final TranslateRequest request = new TranslateRequest(textToTranslate, langFrom, langTo);
+        final TranslateRequest request = new TranslateRequest(textToTranslate, mLanguageFrom.getLangCode(), mLanguageTo.getLangCode());
         if (historyCache.containsKey(request)) {
             callback.onSuccess(historyCache.get(request));
             return;
         }
 
-        mTranslateService.translate(textToTranslate, langFrom + "-" + langTo).enqueue(new retrofit2.Callback<ResponseBody>() {
+        mTranslateService.translate(textToTranslate,
+                mLanguageFrom.getLangCode() + "-" + mLanguageTo.getLangCode()).enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
@@ -60,7 +84,16 @@ public class TranslateProvider {
                         historyCache.put(request, translateResponse.getTranslateText());
                         callback.onSuccess(translateResponse.getTranslateText());
                     } else {
-                        callback.onError(new Throwable(context.getString(R.string.error)));
+                        String errorText;
+                        switch (translateResponse.getCode()) {
+                            case 501:
+                                errorText = context.getString(R.string.error_501);
+                                break;
+                            default:
+                                errorText = context.getString(R.string.error);
+                                break;
+                        }
+                        callback.onError(new Throwable(errorText));
                     }
                 } catch (JSONException | IOException e) {
                     e.printStackTrace();
@@ -73,5 +106,79 @@ public class TranslateProvider {
                 callback.onError(new Throwable(context.getString(R.string.error_no_internet)));
             }
         });
+    }
+
+    /**
+     * Возвращает список доступных языков
+     * @param context контекст
+     * @return список доступных языков
+     */
+    public List<Language> getLanguages(Context context) {
+        if (mLanguageList.isEmpty()) {
+            mLanguageList = new JSONSerializer().getLanguages(context);
+        }
+        return mLanguageList;
+    }
+
+    /**
+     * Возвращает последний выбранный исходный язык перевода
+     * @param context контекст
+     * @return последний выбранный исходный язык перевода
+     */
+    private Language getLastLanguageFrom(Context context) {
+        String langCode = UtilPreferences.getLastLangFrom(context);
+        for (Language language : getLanguages(context)) {
+            if (language.getLangCode().equals(langCode)) {
+                return language;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Возвращает последний выбранный конечный язык перевода
+     * @param context контекст
+     * @return последний выбранный конечный язык перевода
+     */
+    private Language getLastLanguageTo(Context context) {
+        String langCode = UtilPreferences.getLastLangTo(context);
+        for (Language language : getLanguages(context)) {
+            if (language.getLangCode().equals(langCode)) {
+                return language;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Возврвщает текущий исходный язык перевода
+     * @return текущий исходный язык перевода
+     */
+    public Language getLanguageFrom() {
+        return mLanguageFrom;
+    }
+
+    /**
+     * Возврвщает текущий конечный язык перевода
+     * @return текущий конечный язык перевода
+     */
+    public Language getLanguageTo() {
+        return mLanguageTo;
+    }
+
+    /**
+     * Устанавливает текущий исходный язык перевода
+     * @param languageFrom исходный язык перевода
+     */
+    public void setLanguageFrom(Language languageFrom) {
+        mLanguageFrom = languageFrom;
+    }
+
+    /**
+     * Устанавливает текущий конечный язык перевода
+     * @param languageTo конечный язык перевода
+     */
+    public void setLanguageTo(Language languageTo) {
+        mLanguageTo = languageTo;
     }
 }
