@@ -15,4 +15,6 @@
     <string name="history_search">Найти в истории</string>
     <string name="history_search_favorite">Найти в избранном</string>
     <string name="languages">%1$s - %2$s</string>
+
+    <string name="another_apps">Другие приложения разработчика</string>
 </resources>

@@ -14,4 +14,12 @@
         android:text="@string/clear_history"
         />
 
+    <Button
+        android:id="@+id/button_dev_apps"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="@string/another_apps"
+        />
+
 </LinearLayout>

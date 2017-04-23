@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.iamkatrechko.yandexschool2017.util.Util;
+
 import static com.iamkatrechko.yandexschool2017.database.DatabaseDescription.*;
 
 /**
@@ -30,6 +32,13 @@ public class SettingsFragment extends Fragment {
             public void onClick(View view) {
                 getActivity().getContentResolver().delete(Record.CONTENT_URI, null, null);
                 Toast.makeText(getActivity(), R.string.cleared_history, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        v.findViewById(R.id.button_dev_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Util.goToGooglePlayDeveloper(getActivity());
             }
         });
 
