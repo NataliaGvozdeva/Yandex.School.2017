@@ -51,18 +51,36 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Генерирует демоданные в таблице
-     * @param sqLiteDatabase таблца для генерации
+     * @param db база данных для генерации
      */
-    private void generateTestData(SQLiteDatabase sqLiteDatabase) {
-        for (int i = 1; i < 20; i++) {
-            String query = "INSERT INTO " + Record.TABLE_NAME + " (source, translate, from_lang, to_lang, is_favorite) values(" +
-                    "'source " + i + "', " +
-                    "'translate " + i + "', " +
-                    "'RU" + i + "', " +
-                    "'EN" + i + "', " +
-                    "" + i % 2 + ")";
-            sqLiteDatabase.execSQL(query);
-        }
+    private void generateTestData(SQLiteDatabase db) {
+        insertRecord(db, "streamline", "оптимизация", "EN", "RU", true);
+        insertRecord(db, "enigma", "Энигма", "EN", "RU", true);
+        insertRecord(db, "streamlined", "обтекаемый", "EN", "RU", false);
+        insertRecord(db, "Привет", "Hi", "RU", "EN", false);
+        insertRecord(db, "распространитель", "distributor", "RU", "EN", false);
+        insertRecord(db, "purveyor", "поставщик", "EN", "RU", false);
+        insertRecord(db, "purveyors", "заготовителей", "EN", "RU", false);
+        insertRecord(db, "acquaintance", "знакомство", "EN", "RU", true);
+    }
+
+    /**
+     * Добавляет одну запись истории в базу данных
+     * @param db         база данных
+     * @param source     исходный текст перевода
+     * @param translate  конечный текст перевода
+     * @param langFrom   исходный язык перевода
+     * @param langTo     конечный язык перевода
+     * @param isFavorite принадлежность записи к избранным
+     */
+    private void insertRecord(SQLiteDatabase db, String source, String translate, String langFrom, String langTo, boolean isFavorite) {
+        String query = "INSERT INTO " + Record.TABLE_NAME + " (source, translate, from_lang, to_lang, is_favorite) values(" +
+                "'" + source + "', " +
+                "'" + translate + "', " +
+                "'" + langFrom + "', " +
+                "'" + langTo + "', " +
+                (isFavorite ? "1" : "0") + ")";
+        db.execSQL(query);
     }
 
     @Override
