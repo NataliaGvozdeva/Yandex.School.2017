@@ -49,7 +49,7 @@ public class DialogChoiceLanguage extends DialogFragment {
 
     @NonNull
     public Dialog onCreateDialog(Bundle bundle) {
-        mLanguages = new TranslateProvider(getActivity()).getLanguages(getActivity());
+        mLanguages = TranslateProvider.get(getActivity()).getLanguages(getActivity());
         String[] stockArr = new String[mLanguages.size()];
         for (Language language : mLanguages) {
             stockArr[mLanguages.indexOf(language)] = language.getLangName();

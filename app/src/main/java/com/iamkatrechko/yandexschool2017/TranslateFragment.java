@@ -75,7 +75,6 @@ public class TranslateFragment extends Fragment {
             // TODO Переместить метод сохранения истории в более подходящее и правильное место
             // TODO Да, решение не очень красиво, но пока это первое и самое быстрое, что пришло в голову за ограниченное время
             addToHistory();
-
         }
 
         @Override
@@ -112,7 +111,7 @@ public class TranslateFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTranslateProvider = new TranslateProvider(getActivity());
+        mTranslateProvider = TranslateProvider.get(getActivity());
     }
 
     @Override

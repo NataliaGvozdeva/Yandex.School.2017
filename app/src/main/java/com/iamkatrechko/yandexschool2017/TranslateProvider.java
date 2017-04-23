@@ -25,30 +25,33 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Провайдер для перевода текстов и получения доступных языков
+ * Провайдер-синглтон для перевода текстов и получения доступных языков
  * @author iamkatrechko
  *         Date: 23.04.2017
  */
 public class TranslateProvider {
 
-    /** Retrofit-сервис для перевода слов и получения доступных языков */
-    private YandexTranslateService mTranslateService;
     /** Базовый адрес сервера */
     private static final String BASE_URL = "https://translate.yandex.net/api/v1.5/tr.json/";
-    /** Примитивный кэш переведенных текстов на время сессии приложения */
-    private Map<TranslateRequest, String> historyCache = new HashMap<>();
-    /** Список доступных языков */
-    private List<Language> mLanguageList = new ArrayList<>();
     /** Исходный язык перевода */
     private static Language mLanguageFrom;
     /** Конечный язык перевода */
     private static Language mLanguageTo;
+    /** Единственный экземпляр класса */
+    private static TranslateProvider sTranslateProvider;
+
+    /** Retrofit-сервис для перевода слов и получения доступных языков */
+    private YandexTranslateService mTranslateService;
+    /** Примитивный кэш переведенных текстов на время сессии приложения */
+    private Map<TranslateRequest, String> historyCache = new HashMap<>();
+    /** Список доступных языков */
+    private List<Language> mLanguageList = new ArrayList<>();
 
     /**
      * Конструктор
      * @param context контекст
      */
-    public TranslateProvider(Context context) {
+    private TranslateProvider(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -57,6 +60,19 @@ public class TranslateProvider {
 
         mLanguageFrom = getLastLanguageFrom(context);
         mLanguageTo = getLastLanguageTo(context);
+    }
+
+    /**
+     * Возвращает единственный экземпляр класса
+     * @param context контекст
+     * @return единственный экземпляр класса
+     */
+    public static TranslateProvider get(Context context) {
+        // TODO Здесь можно сделать double-check-lock, но в данном случае нет необходимости
+        if (sTranslateProvider == null) {
+            sTranslateProvider = new TranslateProvider(context);
+        }
+        return sTranslateProvider;
     }
 
     /**
