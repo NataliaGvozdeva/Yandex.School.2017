@@ -57,7 +57,7 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
         insertRecord(db, "streamline", "оптимизация", "en", "ru", true);
         insertRecord(db, "enigma", "Энигма", "en", "ru", true);
         insertRecord(db, "streamlined", "обтекаемый", "en", "ru", false);
-        insertRecord(db, "Привет", "Hi", "ru", "en", false);
+        insertRecord(db, "привет", "hi", "ru", "en", false);
         insertRecord(db, "распространитель", "distributor", "ru", "en", false);
         insertRecord(db, "purveyor", "поставщик", "en", "ru", false);
         insertRecord(db, "purveyors", "заготовителей", "en", "ru", false);

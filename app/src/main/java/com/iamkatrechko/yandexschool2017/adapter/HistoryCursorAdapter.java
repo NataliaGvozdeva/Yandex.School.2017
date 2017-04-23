@@ -148,7 +148,7 @@ public class HistoryCursorAdapter extends RecyclerView.Adapter<HistoryCursorAdap
             mImageViewBookmark.setImageResource(cursor.isFavorite() ? R.drawable.ic_star_white : R.drawable.ic_star_border_white);
             mTextViewSourceText.setText(cursor.getSource());
             mTextViewTranslateText.setText(cursor.getTranslate());
-            mTextViewLanguages.setText(mContext.getString(R.string.languages, cursor.getFromLanguage(), cursor.getToLanguage()));
+            mTextViewLanguages.setText(mContext.getString(R.string.languages, cursor.getFromLanguage(), cursor.getToLanguage()).toUpperCase());
         }
     }
 

@@ -41,7 +41,7 @@
                 >
 
                 <ImageButton
-                    android:id="@+id/image_button_to_tell"
+                    android:id="@+id/image_button_speech"
                     style="@style/MyImageButton"
                     android:src="@drawable/ic_mic_black"
                     />
@@ -132,7 +132,7 @@
                 />
 
             <ImageButton
-                android:id="@+id/image_button_bookmark"
+                android:id="@+id/image_button_favorite"
                 style="@style/MyImageButton"
                 android:src="@drawable/ic_bookmark_black"
                 />
