@@ -3,6 +3,6 @@
 Сделано по образу и подобию Яндекс.Переводчика</br>
 Перевод текста производится при помощи API Яндекс.Переводчика
 
-<img src="https://github.com/iamkatrechko/Yandex.School-2017/blob/master/raw/1.png" width="280">
-<img src="https://github.com/iamkatrechko/Yandex.School-2017/blob/master/raw/2.png" width="280">
-<img src="https://github.com/iamkatrechko/Yandex.School-2017/blob/master/raw/3.png" width="280">
+<img align="left" src="https://github.com/iamkatrechko/Yandex.School-2017/blob/master/raw/1.png" width="240">
+<img align="left" src="https://github.com/iamkatrechko/Yandex.School-2017/blob/master/raw/2.png" width="240">
+<img align="left" src="https://github.com/iamkatrechko/Yandex.School-2017/blob/master/raw/3.png" width="240">
